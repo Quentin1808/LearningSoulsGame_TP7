@@ -1,5 +1,7 @@
 package lsg.bags;
 
+import lsg.LearningSoulsGame;
+
 import java.util.HashSet;
 
 public class Bag {
@@ -10,6 +12,7 @@ public class Bag {
 
     public Bag(int capacity){
         this.capacity = capacity;
+        this.items = new HashSet<>();
     }
 
     public int getCapacity() {
@@ -29,8 +32,10 @@ public class Bag {
     }
 
     public void push(Collectible item){
-        items.add(item);
-        this.setWeight(item.getWeight());
+        if(this.weight + item.getWeight() <= capacity) {
+            items.add(item);
+            weight = weight + item.getWeight();
+        }
     }
 
     public Collectible pop(Collectible item){
@@ -51,30 +56,33 @@ public class Bag {
     }
 
     public Collectible[] getItems(){
-        //Collectible ListeItems [] = new Collectible [];
-        int i = 0;
-
-        for (Collectible item : items){
-            //ListeItems[i] = item;
-            i++;
-        }
-        int c =0;
-        Collectible ListeItems [] = new Collectible [i];
-        for (Collectible item : items){
-            ListeItems[c] = item;
-            c++;
-        }
-
-        return ListeItems;
+        return items.toArray(new Collectible[items.size()]);
     }
 
     @Override
     public String toString() {
+        String result = String.format("%s [ %d items | %d/%d kg ]",getClass().getSimpleName(),items.size(), weight, capacity);
+        if(items.size() == 0){
+            result += "\n" + LearningSoulsGame.BULLET_POINT + "(empty)";
+        }
+        else{
+            for (Collectible item: items) {
+                result += "\n"+ LearningSoulsGame.BULLET_POINT + item.toString() + "[" + item.getWeight() + " kg]";
+            }
+        }
+        return result;
+    }
 
-        String chaine = getClass().getSimpleName() + " [ " + items.size() + " items | " + this.getWeight() + "/" + this.getCapacity() + " kg ]";
+    public static void transfer(Bag from, Bag into){
+        if(from == into){
+            return;
+        }
+        for(Collectible item: from.getItems()){
+            into.push(item);
+            if(into.contains(item)){
+                from.pop(item);
+            }
+        }
 
-
-
-        return chaine;
     }
 }

@@ -1,4 +1,7 @@
 package lsg.characters;
+import lsg.bags.Bag;
+import lsg.bags.Collectible;
+import lsg.bags.SmallBag;
 import lsg.consumables.Consumable;
 import lsg.consumables.drinks.Drink;
 import lsg.consumables.food.Food;
@@ -23,11 +26,13 @@ public abstract class Character {
     public static final String STAM_STAT_STRING = "stamina";
     public static final String PROTECTION_STAT_STRING = "protection";
     public static final String BUFF_STAT_STRING = "buff";
+    private Bag bag;
 
     private Consumable consumable;
 
     protected Character() {
         dice = new Dice(101);
+        this.bag = new SmallBag();
     }
 
     public Character(String name) {
@@ -210,6 +215,53 @@ public abstract class Character {
 
     public void consume(){
         use(consumable);
+    }
+
+    public void pickUp(Collectible item){
+        if(this.bag != null) {
+            this.bag.push(item);
+            if(this.bag.contains(item)){
+                System.out.print(getName() + " picks up " + item );
+            }
+        }
+    }
+
+    public Collectible pullOut(Collectible item){
+        if(this.bag != null){
+            System.out.print(getName() + " pulls out " + item );
+            return this.bag.pop(item);
+        }
+        return null;
+    }
+
+    public void printBag(){
+        System.out.println("BAG : " + this.bag);
+    }
+
+    public int getBagCapacity(){
+        return this.bag.getCapacity();
+    }
+
+    public int getBagWeight(){
+        return this.bag.getWeight();
+    }
+
+    public Collectible[] getBagItems(){
+        return this.bag.getItems();
+    }
+
+    public void equip(Weapon weapon){
+        if(pullOut(weapon) != null){
+            setWeapon(weapon);
+            System.out.println(" and equips it !");
+        }
+    }
+
+    public void equip(Consumable consumable){
+        if(pullOut(consumable) != null){
+            setConsumable(consumable);
+            System.out.println(" and equips it !");
+        }
     }
 
 }

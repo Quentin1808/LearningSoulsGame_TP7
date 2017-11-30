@@ -151,4 +151,18 @@ public class Hero extends Character {
     // 6)La visibilité optimale est protected car elle permet d'accéder à la méthode depuis le même package
 
     // 7)La visibilité optimale est public car il n'y a qu'elle qu'y permet d'accéder à la méthode
+
+    public void equip(ArmorItem item, int slot){
+        if(pullOut(item) != null) {
+            this.setArmorItem(item, slot);
+            System.out.println(" and equips it !");
+        }
+    }
+
+    public void equip(Ring ring, int slot){
+        if(pullOut(ring) != null){
+            this.setRing(ring, slot);
+            System.out.println(" and equips it !");
+        }
+    }
 }
