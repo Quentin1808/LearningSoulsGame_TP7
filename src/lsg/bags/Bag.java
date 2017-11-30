@@ -1,6 +1,10 @@
 package lsg.bags;
 
 import lsg.LearningSoulsGame;
+import lsg.armor.BlackWitchVeil;
+import lsg.armor.DragonSlayerLeggings;
+import lsg.consumables.food.Hamburger;
+import lsg.weapons.Sword;
 
 import java.util.HashSet;
 
@@ -83,6 +87,20 @@ public class Bag {
                 from.pop(item);
             }
         }
+    }
+
+    public static void main(String[] args) {
+        DragonSlayerLeggings DSL = new DragonSlayerLeggings();
+        SmallBag bag = new SmallBag();
+        bag.push(new BlackWitchVeil());
+        bag.push(DSL);
+        bag.push(new Sword());
+        bag.push(new Hamburger());
+        System.out.println(bag.toString());
+        bag.pop(DSL);
+        System.out.println("Pop sur "+DSL.toString());
+        System.out.println();
+        System.out.println(bag.toString());
     }
 
 
