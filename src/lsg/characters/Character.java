@@ -264,6 +264,18 @@ public abstract class Character {
         }
     }
 
+    public Bag setBag(Bag bag){
+        if( bag != null){
+            Bag tmp;
+            Bag.transfer(this.bag,bag);
+            tmp = this.bag;
+            this.bag = bag;
+            System.out.println(getName() + " changes " + tmp.getClass().getSimpleName() + " for " + bag.getClass().getSimpleName());
+            return tmp;
+        }
+        return null;
+    }
+
 }
 
 //Question 4.2 L'erreur est dû au faites que la méthode computeProtection

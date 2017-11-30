@@ -61,16 +61,16 @@ public class Bag {
 
     @Override
     public String toString() {
-        String result = String.format("%s [ %d items | %d/%d kg ]",getClass().getSimpleName(),items.size(), weight, capacity);
-        if(items.size() == 0){
-            result += "\n" + LearningSoulsGame.BULLET_POINT + "(empty)";
+        String str = getClass().getSimpleName() + " [ " + items.size() + " items | " + weight + "/" + capacity + " kg ]\n";
+        if(items.isEmpty()){
+            str += LearningSoulsGame.BULLET_POINT +" (empty)";
         }
-        else{
-            for (Collectible item: items) {
-                result += "\n"+ LearningSoulsGame.BULLET_POINT + item.toString() + "[" + item.getWeight() + " kg]";
+        else {
+            for (Collectible item : items) {
+                str += LearningSoulsGame.BULLET_POINT + " " + item.toString() + "["+item.getWeight()+" kg]\n";
             }
         }
-        return result;
+        return str;
     }
 
     public static void transfer(Bag from, Bag into){
@@ -83,6 +83,7 @@ public class Bag {
                 from.pop(item);
             }
         }
-
     }
+
+    
 }
