@@ -276,6 +276,35 @@ public abstract class Character {
         return null;
     }
 
+    private Consumable fastUseFirst(Class<? extends Consumable> Cons){
+        for (Collectible item : bag.getItems()) {
+            if (Cons.isInstance(item)) {
+                use((Consumable) item);
+                if (((Consumable) item).getCapacity() == 0) {
+                    pullOut(item);
+                }
+                return (Consumable)item;
+            }
+        }
+        return null;
+    }
+
+    public Drink fastDrink(){
+        System.out.println(getName() + " drinks FAST :");
+        return (Drink)fastUseFirst(Drink.class);
+    }
+
+    public Food fastEat(){
+        System.out.println(getName() + " eats FAST :");
+        return (Food)fastUseFirst(Food.class);
+    }
+
+    public RepairKit fastRepair(){
+        System.out.println(getName() + " repairs FAST :");
+        return (RepairKit)fastUseFirst(RepairKit.class);
+    }
+
+
 }
 
 //Question 4.2 L'erreur est dû au faites que la méthode computeProtection
