@@ -304,6 +304,23 @@ public abstract class Character {
         return (RepairKit)fastUseFirst(RepairKit.class);
     }
 
+    public String printConsummable(){
+        String chaine = "CONSUMMABLE : ";
+
+        chaine = chaine + this.getConsumable().toString();
+
+        return chaine;
+    }
+
+    public String printWeapon(){
+        String chaine = "WEAPON : ";
+
+        chaine = chaine + this.getWeapon().toString();
+
+        return chaine;
+
+    }
+
 
 }
 

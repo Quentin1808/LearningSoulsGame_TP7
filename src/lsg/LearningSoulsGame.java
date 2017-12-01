@@ -21,7 +21,7 @@ import java.util.Scanner;
 public class LearningSoulsGame {
 
     //On déclare 1 Hero et 1 Monstre ainsi qu'un Scanner
-    private lsg.characters.Character hero1 = new Hero();
+    private lsg.characters.Hero hero1 = new Hero();
     private lsg.characters.Character monster1 = new Monster();
     private Scanner scanner = new Scanner(System.in);
     public static final String BULLET_POINT = "\u2219";
@@ -31,8 +31,15 @@ public class LearningSoulsGame {
     private void refresh(){
 
         hero1.printStats();
-        System.out.println(BULLET_POINT + hero1.getWeapon().toString());
-        System.out.println(BULLET_POINT + hero1.getConsumable().toString());
+//        System.out.println(BULLET_POINT + hero1.getWeapon().toString());
+//        System.out.println(BULLET_POINT + hero1.getConsumable().toString());
+        System.out.println(hero1.armorToString());
+        System.out.println(hero1.printRings());
+        System.out.println(hero1.printConsummable());
+        System.out.println(hero1.printWeapon());
+        hero1.printBag();
+
+
         System.out.println();
         monster1.printStats();
         System.out.println();
@@ -46,7 +53,7 @@ public class LearningSoulsGame {
 
         hero1.setWeapon(new Sword());
         hero1.setConsumable(new Hamburger());
-        ((Hero)hero1).setArmorItem(new DragonSlayerLeggings(), 2);
+        ((Hero)hero1).setArmorItem(new DragonSlayerLeggings(), 1);
         RingOfDeath ringOfDeath = new RingOfDeath();
         DragonSlayerRing dragonSlayerRing = new DragonSlayerRing();
         ((Hero)hero1).setRing(ringOfDeath, 1);
@@ -147,14 +154,14 @@ public class LearningSoulsGame {
         System.out.println(hero1.toString());
     }
 
-    public void aTable(){
-        MenuBestOfV4 menu = new MenuBestOfV4();
-        for (Consumable element: menu) {
-            hero1.use(element);
-            System.out.println(hero1.toString());
-        }
-        System.out.println(hero1.getWeapon().toString());
-    }
+//    public void aTable(){
+//        MenuBestOfV4 menu = new MenuBestOfV4();
+//        for (Consumable element: menu) {
+//            hero1.use(element);
+//            System.out.println(hero1.toString());
+//        }
+//        System.out.println(hero1.getWeapon().toString());
+//    }
 
     private void title(){
         System.out.println("###############################");
@@ -168,9 +175,11 @@ public class LearningSoulsGame {
         LearningSoulsGame lsg = new LearningSoulsGame();
         //lsg.createExhaustedHero();
         //lsg.aTable();
-        lsg.title();
+        //lsg.title();
+
         lsg.init();
-        lsg.fight1v1();
+        lsg.refresh();
+        //lsg.fight1v1();
        /*Monster M1 = new Monster("STUDENTATORT");
        Monster M2 = new Monster();
        Monster M3 = new Monster();

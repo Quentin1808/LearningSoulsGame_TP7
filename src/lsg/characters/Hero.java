@@ -165,4 +165,18 @@ public class Hero extends Character {
             System.out.println(" and equips it !");
         }
     }
+
+    public String printRings(){
+
+        String chaine = "RINGS";
+        int c = 1;
+
+        for (Ring R : this.getRings()){
+            chaine = chaine + "   " + c + ":" + R.toString();
+            c++;
+        }
+
+        return chaine;
+    }
+
 }
