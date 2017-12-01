@@ -170,6 +170,12 @@ public class LearningSoulsGame {
         System.out.println();
     }
 
+    private void testExceptions(){
+        hero1.setWeapon(null);
+        fight1v1();
+
+    }
+
     public static void main(String[] args) {
 
         LearningSoulsGame lsg = new LearningSoulsGame();
@@ -178,6 +184,7 @@ public class LearningSoulsGame {
         //lsg.title();
 
         lsg.init();
+        lsg.testExceptions();
         lsg.refresh();
         //lsg.fight1v1();
        /*Monster M1 = new Monster("STUDENTATORT");
