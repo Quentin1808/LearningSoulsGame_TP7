@@ -78,6 +78,11 @@ public class Bag {
     }
 
     public static void transfer(Bag from, Bag into){
+
+        if(from == null || into == null){
+            return;
+        }
+
         if(from == into){
             return;
         }

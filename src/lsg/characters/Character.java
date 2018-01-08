@@ -6,6 +6,7 @@ import lsg.consumables.Consumable;
 import lsg.consumables.drinks.Drink;
 import lsg.consumables.food.Food;
 import lsg.consumables.repair.RepairKit;
+import lsg.exceptions.*;
 import lsg.helpers.*;
 import lsg.weapons.Weapon;
 
@@ -104,16 +105,25 @@ public abstract class Character {
         System.out.println(toString());
     }
 
-    private int attackWith(Weapon weapon){
+    private int attackWith(Weapon weapon) throws WeaponNullException, WeaponBrokenException, StaminaEmptyException {
+
+        if(weapon == null){
+            throw new WeaponNullException();
+        }
+
+        if(stamina <= 0){
+            throw new StaminaEmptyException();
+        }
 
         int dmg;
         int precision;
         int degats = 0;
 
-        if (weapon.isBroken() || this.getStamina() <= 0){
-            weapon.use();
-            return 0;
-        }else {
+
+
+        if (weapon.isBroken()){
+            throw new WeaponBrokenException(weapon);
+        }else{
             precision = this.dice.roll();
 
             if (precision == 0){
@@ -141,7 +151,7 @@ public abstract class Character {
 
     }
 
-    public int attack(){
+    public int attack() throws WeaponNullException, WeaponBrokenException, StaminaEmptyException {
        return attackWith(this.weapon);
     }
 
@@ -173,7 +183,12 @@ public abstract class Character {
 
     protected abstract float computeBuff();
 
-    private void drink(Drink boisson){
+    private void drink(Drink boisson) throws ConsumeNullException, ConsumeEmptyException {
+
+        if (boisson == null){
+            throw new ConsumeNullException();
+        }
+
         System.out.println(this.name + " drinks " + boisson.toString());
         //this.setStamina(getStamina() + boisson.use());
         if(this.getStamina() + boisson.use() <= this.getMaxStamina()){
@@ -183,7 +198,12 @@ public abstract class Character {
         }
     }
 
-    private void eat(Food nourriture){
+    private void eat(Food nourriture) throws ConsumeNullException, ConsumeEmptyException {
+
+        if(nourriture == null){
+            throw new ConsumeNullException();
+        }
+
         System.out.println(this.name + " eats " + nourriture.toString());
         //this.setLife(getLife() + nourriture.use());
         //(this.getLife() + nourriture.use() <= this.getMaxLife()) ? this.setLife(getLife() + nourriture.use()) : this.setLife(this.getMaxLife());
@@ -194,12 +214,20 @@ public abstract class Character {
         }
     }
 
-    private void repairWeaponWith(RepairKit kit){
-        System.out.println(this.name + " repairs " + weapon.toString() + " with " + kit.toString());
-        this.weapon.repairWith(kit);
+    private void repairWeaponWith(RepairKit kit) throws WeaponNullException, ConsumeNullException, ConsumeEmptyException {
+        if( weapon == null){
+            throw new WeaponNullException();
+        }else {
+            System.out.println(this.name + " repairs " + weapon.toString() + " with " + kit.toString());
+            this.weapon.repairWith(kit);
+        }
     }
 
-    public void use(Consumable consumable){
+    public void use(Consumable consumable) throws ConsumeNullException, ConsumeEmptyException, ConsumeRepairNullWeaponException {
+
+        if(consumable == null){
+            throw new ConsumeNullException();
+        }
 
         if (consumable instanceof Drink){
                 drink((Drink) consumable);
@@ -208,12 +236,16 @@ public abstract class Character {
                 eat((Food) consumable);
             }
             else if(consumable instanceof RepairKit){
-                repairWeaponWith((RepairKit) consumable);
+                try {
+                    repairWeaponWith((RepairKit) consumable);
+                }catch (WeaponNullException e){
+                    throw new ConsumeRepairNullWeaponException(consumable);
+                }
             }
 
     }
 
-    public void consume(){
+    public void consume() throws ConsumeNullException, ConsumeEmptyException, ConsumeRepairNullWeaponException {
         use(consumable);
     }
 
@@ -250,14 +282,14 @@ public abstract class Character {
         return this.bag.getItems();
     }
 
-    public void equip(Weapon weapon){
+    public void equip(Weapon weapon) throws NoBagException {
         if(pullOut(weapon) != null){
             setWeapon(weapon);
             System.out.println(" and equips it !");
         }
     }
 
-    public void equip(Consumable consumable){
+    public void equip(Consumable consumable) throws NoBagException {
         if(pullOut(consumable) != null){
             setConsumable(consumable);
             System.out.println(" and equips it !");
@@ -265,7 +297,18 @@ public abstract class Character {
     }
 
     public Bag setBag(Bag bag){
-        if( bag != null){
+
+        if(this.bag == null){
+            this.bag = bag;
+            return null;
+        }
+
+        if(bag == null){
+            Bag tmp = this.bag;
+            this.bag = bag;
+            return tmp;
+        }
+        else{
             Bag tmp;
             Bag.transfer(this.bag,bag);
             tmp = this.bag;
@@ -273,10 +316,10 @@ public abstract class Character {
             System.out.println(getName() + " changes " + tmp.getClass().getSimpleName() + " for " + bag.getClass().getSimpleName());
             return tmp;
         }
-        return null;
+
     }
 
-    private Consumable fastUseFirst(Class<? extends Consumable> Cons){
+    private Consumable fastUseFirst(Class<? extends Consumable> Cons) throws ConsumeNullException, ConsumeEmptyException, ConsumeRepairNullWeaponException, NoBagException {
         for (Collectible item : bag.getItems()) {
             if (Cons.isInstance(item)) {
                 use((Consumable) item);
@@ -289,19 +332,32 @@ public abstract class Character {
         return null;
     }
 
-    public Drink fastDrink(){
-        System.out.println(getName() + " drinks FAST :");
-        return (Drink)fastUseFirst(Drink.class);
+    public Drink fastDrink() throws ConsumeNullException, ConsumeEmptyException, NoBagException {
+        try{
+            System.out.println(getName() + " drinks FAST :");
+            return (Drink)fastUseFirst(Drink.class);
+        }catch (ConsumeRepairNullWeaponException e){
+            return null;
+        }
+
     }
 
-    public Food fastEat(){
-        System.out.println(getName() + " eats FAST :");
-        return (Food)fastUseFirst(Food.class);
+    public Food fastEat() throws ConsumeNullException, ConsumeEmptyException, NoBagException {
+        try {
+            System.out.println(getName() + " eats FAST :");
+            return (Food) fastUseFirst(Food.class);
+        }catch (ConsumeRepairNullWeaponException e){
+            return null;
+        }
     }
 
-    public RepairKit fastRepair(){
-        System.out.println(getName() + " repairs FAST :");
-        return (RepairKit)fastUseFirst(RepairKit.class);
+    public RepairKit fastRepair() throws ConsumeNullException, ConsumeEmptyException, NoBagException {
+        try {
+            System.out.println(getName() + " repairs FAST :");
+            return (RepairKit) fastUseFirst(RepairKit.class);
+        }catch (ConsumeRepairNullWeaponException e){
+            return null;
+        }
     }
 
     public String printConsummable(){

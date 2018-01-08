@@ -9,6 +9,7 @@ import java.lang.Character;
 import lsg.consumables.Consumable;
 import lsg.consumables.MenuBestOfV4;
 import lsg.consumables.food.Hamburger;
+import lsg.exceptions.*;
 import lsg.weapons.Weapon;
 import lsg.weapons.Claw;
 import lsg.weapons.ShotGun;
@@ -84,18 +85,41 @@ public class LearningSoulsGame {
                 //}
                 if (val == 1) {
 
-                    //System.out.print("\nHit enter key for next move > ");
-                    //scanner.nextLine();
+                    try{
+                        att = p1.attack();
+                    }catch (WeaponNullException e){
+                        att = 0;
+                        System.out.println("WARNING : no weapon has been equiped !!!");
+                    }catch (WeaponBrokenException e){
+                        att = 0;
+                        System.out.println("WARNING : " + e);
+                    }catch (StaminaEmptyException e){
+                        att = 0;
+                        System.out.println("ACTION HAS NO EFFECT: no more stamina !!!");
+                    }
 
-                    att = p1.attack();
                     dmg = p2.getHitWith(att);
-                    System.out.println("\n" + p1.getName() + " attacks " + p2.getName() + " with " + p1.getWeapon().getName() + " (ATTACK:" + att + " | DMG : " + dmg + ")");
+
+                    try {
+                        System.out.println(p1.getName() + " attacks " + p2.getName() + " with " + p1.getWeapon().getName() + " (ATTACK:" + att + " | DMG : " + dmg + ")");
+                    }catch(NullPointerException e){
+                        System.out.println(p1.getName() + " attacks " + p2.getName() + " with " + p1.getWeapon() + " (ATTACK:" + att + " | DMG : " + dmg + ")");
+                    }
+
                     refresh();
                     tmp = p2;
                     p2 = p1;
                     p1 = tmp;
                 } else if (val == 2) {
-                    p1.consume();
+                    try{
+                        p1.consume();
+                    }catch(ConsumeNullException e){
+                        System.out.println("IMPOSSIBLE ACTION : no consumable has been equiped");
+                    }catch(ConsumeEmptyException e){
+                        System.out.println("ACTION HAS NO EFFECT : " + e.getConsumable().getName() + " is empty !");
+                    }catch(ConsumeRepairNullWeaponException e){
+                        System.out.println("IMPOSSIBLE ACTION : no weapon has been equiped !");
+                    }
                     tmp = p2;
                     p2 = p1;
                     p1 = tmp;
@@ -106,9 +130,27 @@ public class LearningSoulsGame {
 
             }else
             {
-                att = p1.attack();
+                try{
+                    att = p1.attack();
+                }catch (WeaponNullException e){
+                    att = 0;
+                    System.out.println("WARNING : no weapon has been equiped !!!");
+                }catch (WeaponBrokenException e){
+                    att = 0;
+                    System.out.println("WARNING : " + e);
+                }catch (StaminaEmptyException e){
+                    att = 0;
+
+                    System.out.println("ACTION HAS NO EFFECT: no more stamina !!!");
+                }
                 dmg = p2.getHitWith(att);
-                System.out.println("\n" + p1.getName() + " attacks " + p2.getName() + " with " + p1.getWeapon().getName() + " (ATTACK:" + att + " | DMG : " + dmg + ")");
+
+                try {
+                    System.out.println(p1.getName() + " attacks " + p2.getName() + " with " + p1.getWeapon().getName() + " (ATTACK:" + att + " | DMG : " + dmg + ")");
+                }catch(NullPointerException e){
+                    System.out.println(p1.getName() + " attacks " + p2.getName() + " with " + p1.getWeapon() + " (ATTACK:" + att + " | DMG : " + dmg + ")");
+                }
+
                 refresh();
                 tmp = p2;
                 p2 = p1;
@@ -150,8 +192,12 @@ public class LearningSoulsGame {
     public void createExhaustedHero(){
         hero1.getHitWith(99);
         hero1.setWeapon(new Weapon("Grosse arme", 0, 0, 1000, 100));
-        hero1.attack();
-        System.out.println(hero1.toString());
+        try{
+            hero1.attack();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
     }
 
 //    public void aTable(){
