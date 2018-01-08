@@ -4,6 +4,7 @@ import lsg.armor.ArmorItem;
 import lsg.armor.BlackWitchVeil;
 import lsg.armor.RingedKnightArmor;
 import lsg.buffs.rings.Ring;
+import lsg.exceptions.NoBagException;
 
 public class Hero extends Character {
 
@@ -152,14 +153,14 @@ public class Hero extends Character {
 
     // 7)La visibilité optimale est public car il n'y a qu'elle qu'y permet d'accéder à la méthode
 
-    public void equip(ArmorItem item, int slot){
+    public void equip(ArmorItem item, int slot) throws NoBagException {
         if(pullOut(item) != null) {
             this.setArmorItem(item, slot);
             System.out.println(" and equips it !");
         }
     }
 
-    public void equip(Ring ring, int slot){
+    public void equip(Ring ring, int slot) throws NoBagException {
         if(pullOut(ring) != null){
             this.setRing(ring, slot);
             System.out.println(" and equips it !");

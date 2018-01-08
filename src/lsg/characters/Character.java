@@ -278,7 +278,7 @@ public abstract class Character {
         return this.bag.getWeight();
     }
 
-    public Collectible[] getBagItems(){
+    public Collectible[] getBagItems() throws NoBagException {
         return this.bag.getItems();
     }
 
@@ -351,7 +351,7 @@ public abstract class Character {
         }
     }
 
-    public RepairKit fastRepair() throws ConsumeNullException, ConsumeEmptyException, NoBagException {
+    public RepairKit fastRepair() throws ConsumeNullException, ConsumeEmptyException, NoBagException, ConsumeRepairNullWeaponException {
         try {
             System.out.println(getName() + " repairs FAST :");
             return (RepairKit) fastUseFirst(RepairKit.class);
