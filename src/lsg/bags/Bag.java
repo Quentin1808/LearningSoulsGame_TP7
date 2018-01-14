@@ -87,11 +87,17 @@ public class Bag {
         if(from == into){
             return;
         }
+
         for(Collectible item: from.getItems()){
-            into.push(item);
-            if(into.contains(item)){
-                from.pop(item);
+            try{
+                into.push(item);
+                if(into.contains(item)){
+                    from.pop(item);
+                }
+            }catch (BagFullException e){
+                System.out.println("Bag is full !");
             }
+
         }
     }
 }

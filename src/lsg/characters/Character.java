@@ -249,7 +249,7 @@ public abstract class Character {
         use(consumable);
     }
 
-    public void pickUp(Collectible item){
+    public void pickUp(Collectible item) throws NoBagException, BagFullException{
         if(this.bag != null) {
             this.bag.push(item);
             if(this.bag.contains(item)){
@@ -258,7 +258,7 @@ public abstract class Character {
         }
     }
 
-    public Collectible pullOut(Collectible item){
+    public Collectible pullOut(Collectible item) throws NoBagException{
         if(this.bag != null){
             System.out.print(getName() + " pulls out " + item );
             return this.bag.pop(item);
@@ -296,7 +296,7 @@ public abstract class Character {
         }
     }
 
-    public Bag setBag(Bag bag){
+    public Bag setBag(Bag bag) throws BagFullException{
 
         if(this.bag == null){
             this.bag = bag;
